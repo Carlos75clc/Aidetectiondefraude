@@ -4,10 +4,10 @@ import matplotlib.pyplot as plt
 import os
 from datetime import datetime
 from fpdf import FPDF
-import webbrowser  # pour ouvrir l'image après
+import webbrowser  
+
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import roc_curve, auc
-import pandas as pd
 import seaborn as sns
 
 # on crée un dossier pour stocker les résultats
@@ -100,15 +100,6 @@ plt.grid(True)
 roc_img_path = os.path.join(save_dir, f"roc_{timestamp}.png")
 plt.savefig(roc_img_path, dpi=300)
 plt.close()
-
-# Création du fichier log pour les prédictions
-log_data = pd.DataFrame({
-    'Transaction ID': range(len(y_val)),  # Utilisation de l'index pour chaque transaction
-    'Prediction': (y_val_pred_prob > 0.5).astype(int).flatten(),
-    'Score de Confiance': y_val_pred_prob.flatten()
-})
-
-log_data.to_csv(os.path.join(save_dir, f'logs_predictions_{timestamp}.csv'), index=False)
 
 # génération du doc pdf avec le compte rendu
 pdf = FPDF()
