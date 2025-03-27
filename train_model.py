@@ -6,6 +6,9 @@ from datetime import datetime
 from fpdf import FPDF
 import webbrowser  # pour ouvrir l'image après
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import roc_curve, auc
+import pandas as pd
+import seaborn as sns
 
 # on crée un dossier pour stocker les résultats
 save_dir = os.path.join(os.getcwd(), 'historique')  # dossier 'historique' pour stocker les résultats
@@ -54,7 +57,7 @@ val_loss = history.history['val_loss']
 train_acc = history.history['accuracy']
 val_acc = history.history['val_accuracy']
 
-# creation des graphiques
+# création des graphiques
 fig, axs = plt.subplots(2, 1, figsize=(8, 10))
 
 # graphique pour la perte
@@ -66,7 +69,7 @@ axs[0].set_title("Évolution de la perte")
 axs[0].legend()
 axs[0].grid(True)
 
-# graphique pour la précision 
+# graphique pour la précision
 axs[1].plot(epochs, train_acc, label='Train Accuracy', color='green')
 axs[1].plot(epochs, val_acc, label='Validation Accuracy', color='orange')
 axs[1].set_xlabel("Épochs")
@@ -75,10 +78,37 @@ axs[1].set_title("Évolution de la précision")
 axs[1].legend()
 axs[1].grid(True)
 
-# sauvegarde de l image
+# sauvegarde de l'image
 graph_img_path = os.path.join(save_dir, f"graphiques_{timestamp}.png")
 plt.savefig(graph_img_path, dpi=300)
 plt.close()
+
+# Calcul de la courbe ROC et de l'AUC
+y_val_pred_prob = model.predict(X_val)
+fpr, tpr, thresholds = roc_curve(y_val, y_val_pred_prob)
+roc_auc = auc(fpr, tpr)
+
+# Visualisation de la courbe ROC
+plt.figure(figsize=(8, 6))
+plt.plot(fpr, tpr, color='blue', lw=2, label=f'Courbe ROC (AUC = {roc_auc:.2f})')
+plt.plot([0, 1], [0, 1], color='red', linestyle='--')
+plt.xlabel('Taux de Faux Positifs (FPR)')
+plt.ylabel('Taux de Vrais Positifs (TPR)')
+plt.title('Courbe ROC')
+plt.legend(loc='lower right')
+plt.grid(True)
+roc_img_path = os.path.join(save_dir, f"roc_{timestamp}.png")
+plt.savefig(roc_img_path, dpi=300)
+plt.close()
+
+# Création du fichier log pour les prédictions
+log_data = pd.DataFrame({
+    'Transaction ID': range(len(y_val)),  # Utilisation de l'index pour chaque transaction
+    'Prediction': (y_val_pred_prob > 0.5).astype(int).flatten(),
+    'Score de Confiance': y_val_pred_prob.flatten()
+})
+
+log_data.to_csv(os.path.join(save_dir, f'logs_predictions_{timestamp}.csv'), index=False)
 
 # génération du doc pdf avec le compte rendu
 pdf = FPDF()
@@ -96,6 +126,7 @@ for line in [
     f"Dernier Val Loss : {val_loss[-1]:.4f}",
     f"Dernier Train Acc : {train_acc[-1]*100:.2f}%",
     f"Dernier Val Acc : {val_acc[-1]*100:.2f}%",
+    f"AUC : {roc_auc:.2f}",
     "",
     "Analyse :",
     "- Si la perte diminue, c'est bon signe.",
@@ -105,21 +136,22 @@ for line in [
 ]:
     pdf.cell(200, 8, line, ln=True)
 
-# ajouter l'image au pdf
+# ajouter les images au pdf
 pdf.ln(10)
 try:
     pdf.image(graph_img_path, x=10, w=180)
+    pdf.image(roc_img_path, x=10, w=180)
 except RuntimeError as e:
-    print(f"Erreur lors de l ajout de l image dans le pdf : {e}")
+    print(f"Erreur lors de l'ajout de l'image dans le pdf : {e}")
 
 # sauvegarder le pdf
 pdf.output(pdf_path)
 
-# ouvrir limage du graphique après avoir généré le pdf
+# ouvrir l'image du graphique après avoir généré le pdf
 webbrowser.open(graph_img_path)
 
 # message de fin
-average_accuracy = np.mean(val_acc) * 100  # calcul de "l'accuracy" moyenne
+average_accuracy = np.mean(val_acc) * 100  # calcul de l'accuracy moyenne
 top_accuracy = np.max(val_acc) * 100  # top accuracy
 
 print(f"Entrainement terminé !")
@@ -127,3 +159,4 @@ print(f"Compte rendu PDF : {pdf_path}")
 print(f"\nRésumé des résultats :")
 print(f" - Précision moyenne (Validation) : {average_accuracy:.2f}%")
 print(f" - Meilleure précision obtenue (Validation) : {top_accuracy:.2f}%")
+print(f" - AUC : {roc_auc:.2f}")
