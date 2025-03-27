@@ -1,33 +1,23 @@
-# AI Credit Card Fraud Detection
+# Projet AI_CreditCardFraudDetection
 
-Ce projet a été développé par Carlos et Bastos dans le but de créer un modèle d'intelligence artificielle pour détecter les transactions frauduleuses sur les cartes de crédit. En d'autres termes, l'objectif est d'entraîner un modèle capable de repérer les transactions suspectes en analysant différentes caractéristiques des paiements.
+## Description
+Le projet AI_CreditCardFraudDetection a pour objectif de développer un modèle d'IA permettant de détecter les transactions bancaires frauduleuses. Le modèle est entraîné sur un dataset contenant des informations de transactions. Un dashboard est également mis en place pour suivre l'entraînement du modèle, afficher des graphiques d'évaluation des performances, et générer des rapports.
 
-## Ce que fait ce projet
+## Auteurs
+- Carlosclc
+- BastosJT
 
-Le but ici est de concevoir un système qui, à partir de données bancaires anonymisées, va pouvoir prédire si une transaction est frauduleuse ou non. On travaille avec un dataset qui contient des informations comme le montant de la transaction, l'heure, et d’autres variables qui permettent au modèle d'identifier des patterns de fraude.
+## Instructions d'utilisation
+1. **Téléchargement du dataset :**
+   - Le dataset sera automatiquement téléchargé depuis Google Drive en utilisant le script `download_data.py`.
+   - Il sera téléchargé dans le même dossier que le script sous le nom `creditcard_2023.csv`.
 
-### Technologies utilisées
+2. **Entraînement du modèle :**
+   - Utilisez le script `train_model.py` pour entraîner le modèle sur le dataset. Le modèle est entraîné à l'aide de TensorFlow et les résultats sont enregistrés dans un dossier `historique`.
+   - Le script génère également des graphiques d'entraînement et un fichier PDF avec les résultats.
 
-- **Python** : Le langage de base pour tout le développement du projet.
-- **TensorFlow** : Pour construire et entraîner notre modèle d'IA.
-- **Scikit-learn** : Utilisé pour gérer les données et diviser l'ensemble en deux parties : entraînement et validation.
-- **Matplotlib** : Pour générer des graphiques qui nous aident à suivre la performance du modèle pendant l'entraînement.
-- **FPDF** : Pour générer des rapports en PDF avec les résultats des essais et les analyses de performance du modèle.
+3. **Lancer le Dashboard :**
+   - Le dashboard est une interface graphique qui affiche les performances du modèle, les courbes d’entraînement et de validation, ainsi que des statistiques sur les prédictions.
 
-### Comment ça fonctionne ?
-
-1. **Préparation des données** : On commence par séparer les données en deux ensembles : un pour entraîner le modèle et un autre pour le tester.
-2. **Création du modèle** : Ensuite, on conçoit un modèle de deep learning qui apprend à partir des données et de leurs relations.
-3. **Entraînement** : Le modèle est entraîné en utilisant les données, et on suit ses progrès à chaque étape.
-4. **Analyse des résultats** : Une fois l'entraînement terminé, on génère un rapport en PDF qui résume la performance du modèle, avec des graphiques et des analyses.
-
-### Pourquoi ce projet ?
-
-L'objectif final est de créer un système efficace qui peut détecter automatiquement les transactions frauduleuses et aider à sécuriser les paiements en ligne. Ce projet pourrait avoir un vrai impact dans le domaine de la cybersécurité bancaire, en contribuant à rendre les transactions plus sûres.
-
----
-
-### Contributeurs
-
-- **Carlos**
-- **Bastos**
+## Avertissement
+Ce projet est à des fins éducatives seulement. L'utilisation de ce modèle doit être faite de manière responsable, en particulier dans un contexte professionnel ou bancaire. L'usage à des fins malveillantes, telles que la manipulation de données sensibles ou frauduleuses, est strictement déconseillé et illégal.
