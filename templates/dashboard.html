@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - ML Détéction fraudes bancaires</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #e9eaed;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background-color: white;
+            padding: 25px;
+            border-radius: 20px;
+            border: 2px solid #403c3c;
+        }
+        .row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        .col {
+            width: 48%;
+        }
+        h1{
+            text-align: center;
+            background-color: #403c3c;
+            width: 450px;
+            margin: 0 auto;
+            padding: 10px;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1.75rem;
+        }
+        h3{
+            text-align: center;
+        }
+        p{
+            padding: 0 100px;
+        }
+        .graph {
+            width: 100%;
+            height: 400px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Résultats d'entraînement</h1>
+
+        <div class="row">
+            <div class="col">
+                <h3>Précisions</h3>
+                <p><strong>Précision moyenne (Validation) :</strong> {{ avg_acc }}%</p>
+                <p><strong>Meilleure précision obtenue (Validation) :</strong> {{ best_acc }}%</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <div id="lossChart" class="graph"></div>
+            </div>
+            <div class="col">
+                <div id="accChart" class="graph"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        fetch('/data').then(response => response.json()).then(data => {
+            // Graphe de la Perte
+            var lossData = {
+                labels: Array.from({length: data.train_loss.length}, (_, i) => i + 1),
+                datasets: [
+                    { label: 'Train Loss', data: data.train_loss, borderColor: 'blue', fill: false },
+                    { label: 'Validation Loss', data: data.val_loss, borderColor: 'red', fill: false }
+                ]
+            };
+
+            var accData = {
+                labels: Array.from({length: data.train_acc.length}, (_, i) => i + 1),
+                datasets: [
+                    { label: 'Train Accuracy', data: data.train_acc, borderColor: 'green', fill: false },
+                    { label: 'Validation Accuracy', data: data.val_acc, borderColor: 'orange', fill: false }
+                ]
+            };
+
+            var layout = {
+                title: 'Évolution de la Perte',
+                xaxis: { title: 'Époques' },
+                yaxis: { title: 'Perte' },
+                margin: { t: 40, b: 40, l: 40, r: 40 }
+            };
+
+            var config = {
+                displayModeBar: false,  // Désactive la barre d'outils interactive (menu)
+                displaylogo: false      // Désactive le logo Plotly
+            };
+
+            Plotly.newPlot('lossChart', [{
+                type: 'scatter',
+                mode: 'lines',
+                x: lossData.labels,
+                y: lossData.datasets[0].data,
+                name: lossData.datasets[0].label,
+                line: {color: 'blue'}
+            }, {
+                type: 'scatter',
+                mode: 'lines',
+                x: lossData.labels,
+                y: lossData.datasets[1].data,
+                name: lossData.datasets[1].label,
+                line: {color: 'red'}
+            }], layout, config);
+
+            Plotly.newPlot('accChart', [{
+                type: 'scatter',
+                mode: 'lines',
+                x: accData.labels,
+                y: accData.datasets[0].data,
+                name: accData.datasets[0].label,
+                line: {color: 'green'}
+            }, {
+                type: 'scatter',
+                mode: 'lines',
+                x: accData.labels,
+                y: accData.datasets[1].data,
+                name: accData.datasets[1].label,
+                line: {color: 'orange'}
+            }], {
+                title: 'Évolution de la Précision',
+                xaxis: { title: 'Époques' },
+                yaxis: { title: 'Précision' },
+                margin: { t: 40, b: 40, l: 40, r: 40 }
+            }, config);
+        });
+    </script>
+</body>
+</html>
