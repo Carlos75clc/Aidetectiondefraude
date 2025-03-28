@@ -148,6 +148,7 @@ pdf.output(pdf_output_path)
 
 # Ouvrir l'image du graphique après avoir généré le PDF
 webbrowser.open(graph_img_path)
+webbrowser.open(pdf_output_path)
 
 # Message de fin
 average_accuracy = np.mean(val_acc) * 100  # Calcul de l'accuracy moyenne
