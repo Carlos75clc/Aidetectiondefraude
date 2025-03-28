@@ -86,7 +86,7 @@ axs[1].set_title("Évolution de la précision")
 axs[1].legend()
 axs[1].grid(True)
 
-# Sauvegarde de l'image
+# Sauvegarde de l'image #partie explication de charles
 graph_img_path = os.path.join(os.getcwd(), f"graphiques_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.png")
 plt.savefig(graph_img_path, dpi=300)
 plt.close()
