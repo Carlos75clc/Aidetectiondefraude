@@ -5,7 +5,7 @@ Le projet AI_CreditCardFraudDetection a pour objectif de développer un modèle 
 
 ## Auteurs
 - Carlosclc
-- BastosJT
+- bastojt
 
 ## Instructions d'utilisation
 1. **Téléchargement du dataset :**
