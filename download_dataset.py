@@ -1,7 +1,7 @@
 import gdown
 import os
 
-# ID du fichier sur Google Drive afin d'obtenir le lien de téléchargement direct
+# ID du fichier sur Google Drive afin d'obtenir le lien de téléchargement direct de notre csv
 FILE_ID = "1boSxYXXjyrGCNm3OVU1g6ezy8W_qvojV"
 # Le fichier sera téléchargé dans le même dossier que le script
 OUTPUT_PATH = "creditcard_2023.csv"
