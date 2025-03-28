@@ -11,6 +11,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import roc_curve, auc
 from imblearn.over_sampling import SMOTE
 import seaborn as sns
+import json
 
 # Charger le dataset
 df = pd.read_csv("creditcard_2023.csv")
@@ -160,3 +161,19 @@ print(f"\nRésumé des résultats :")
 print(f" - Précision moyenne (Validation) : {average_accuracy:.2f}%")
 print(f" - Meilleure précision obtenue (Validation) : {top_accuracy:.2f}%")
 print(f" - AUC : {roc_auc:.2f}")
+
+# Sauvegarder les résultats dans un fichier JSON
+def save_results(history, auc, file_path='results.json'):
+    results = {
+        "train_loss": history.history['loss'],
+        "val_loss": history.history['val_loss'],
+        "train_acc": history.history['accuracy'],
+        "val_acc": history.history['val_accuracy'],
+        "auc": auc
+    }
+    
+    with open(file_path, 'w') as f:
+        json.dump(results, f)
+    
+# Après l'entraînement
+save_results(history, roc_auc)
